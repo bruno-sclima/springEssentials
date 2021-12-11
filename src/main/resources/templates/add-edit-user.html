@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Add User</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+</head>
+
+<body>
+<div class="container my-5">
+    <p class="my-5">
+        <a href="/home" class="btn btn-primary">
+            <i class="fas fa-user ml-2">Home</i></a>
+
+        <a href="/list-user" class="btn btn-success">
+            <i class="fas fa-user-plus ml-2"> List of users </i></a>
+    </p>
+    <h3> Register</h3>
+    <div class="card">
+        <div class="card-body">
+            <div class="col-md-10">
+                <form action="#" th:action="@{/createUser}" th:object="${user}"
+                      method="post">
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="name" class="col-form-label">Name</label>
+                            <input type="text" th:field="*{name}" class="form-control"
+                                   id="name" placeholder="insert your name" />
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label for="name" class="col-form-label">Surname</label>
+                            <input type="text" th:field="*{surname}" class="form-control"
+                                   id="surname" placeholder="insert your surname" />
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label for="name" class="col-form-label">Email</label>
+                            <input type="text" th:field="*{email}" class="form-control"
+                                   id="email" placeholder="insert your email" />
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label for="name" class="col-form-label">Password</label>
+                            <input type="password" th:field="*{password}" class="form-control"
+                                   id="password" placeholder="insert a password" />
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label for="name" class="col-form-label">Birthday</label>
+                            <input type="date" th:field="*{birthday}" class="form-control"
+                                   id="birthday" placeholder="insert your birthday" />
+                        </div>
+
+
+
+                        <div class="col-md-6">
+                            <input type="submit" class="btn btn-primary" value=" Submit ">
+                        </div>
+
+                        <input type="hidden" id="id" th:field="*{id}">
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
