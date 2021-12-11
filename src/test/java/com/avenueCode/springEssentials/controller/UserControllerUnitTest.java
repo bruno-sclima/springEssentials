@@ -3,6 +3,7 @@ package com.avenueCode.springEssentials.controller;
 import com.avenueCode.springEssentials.model.User;
 import com.avenueCode.springEssentials.repository.UserRepository;
 import com.avenueCode.springEssentials.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +27,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @WebMvcTest(UserController.class)
 class UserControllerUnitTest {
@@ -32,6 +36,7 @@ class UserControllerUnitTest {
     @MockBean private UserRepository repository;
     @Autowired private UserController underTest;
     @Autowired protected WebApplicationContext wac;
+    @Autowired private ObjectMapper mapper;
     protected User user;
     @BeforeEach
     void setUp(){
@@ -79,11 +84,6 @@ class UserControllerUnitTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
-    @Test
-    void itShouldCreateOrUpdateUser() throws Exception {
-        Mockito.when(service.getUserById(user.getId())).thenReturn( new User((long)1,"Bruno","Lima","brunobhsclima@gmail.com","myPassword",new Date(Date.UTC(2002,3,18,0,0,0))));
-        mockMvc.perform(post("/create-user")).andExpect(MockMvcResultMatchers.status().isOk());
-    }
 
     @Test
     void itShouldEditUserById() throws Exception {
@@ -97,5 +97,21 @@ class UserControllerUnitTest {
     void itShouldDeleteUserById() throws Exception {
         mockMvc.perform(get("/delete-user").with(SecurityMockMvcRequestPostProcessors.user("Bruno").roles("USER")))
                 .andExpect(MockMvcResultMatchers.status().isFound());
+    }
+    @Test
+    void itShouldCreateUser() throws Exception {
+        Mockito.when(service.createOrUpdateUser(user)).thenReturn(user);
+        mockMvc.perform(post("/createUser"))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isFound());
+
+    }
+
+    @Test
+    void edit() throws Exception {
+        mockMvc.perform(post("/edit").with(SecurityMockMvcRequestPostProcessors.user("Bruno").roles("USER"))
+                        .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(user)))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }
